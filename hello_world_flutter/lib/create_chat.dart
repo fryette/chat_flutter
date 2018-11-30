@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hello_world_flutter/widgets/circleImage.dart';
 
 class CreateChatPage extends StatefulWidget {
   @override
