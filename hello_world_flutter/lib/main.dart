@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:hello_world_flutter/SignalRClient.dart';
-import 'package:hello_world_flutter/create_chat.dart';
 import 'package:hello_world_flutter/select_contacts.dart';
 import 'package:hello_world_flutter/widgets/circleImage.dart';
 
@@ -15,7 +14,6 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Startup Name Generator',
       theme: new ThemeData(
-        // Add the 3 lines from here...
         primaryColor: Colors.white,
       ),
       home: new RandomWords(),
