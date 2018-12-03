@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hello_world_flutter/select_contacts.dart';
 
 class CreateChatPage extends StatefulWidget {
+  List<Contact> _selectedContacts;
+
+  CreateChatPage(this._selectedContacts);
+
   @override
   _CreateChatPageState createState() => new _CreateChatPageState();
 }
@@ -28,9 +33,12 @@ class _CreateChatPageState extends State<CreateChatPage> {
   Widget _buildList() {
     return new ListView.builder(
         padding: const EdgeInsets.only(top: 16.0),
-        itemCount: 10,
+        itemCount: widget._selectedContacts.length + 1,
         itemBuilder: (BuildContext _context, int i) {
-          return _buildChatListRow(i);
+          if (i == 0) {
+            return _buildTopContent();
+          }
+          return _buildChatListRow(i - 1);
         });
   }
 
@@ -111,9 +119,6 @@ class _CreateChatPageState extends State<CreateChatPage> {
   }
 
   Widget _buildChatListRow(int i) {
-    if (i == 0) {
-      return _buildTopContent();
-    }
     return Container(
         padding: EdgeInsets.only(left: 16),
         color: Colors.white,
@@ -126,7 +131,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
             title: Column(children: <Widget>[
               Row(children: <Widget>[
                 Expanded(
-                  child: Text("Aliaksandr Bringless",
+                  child: Text(widget._selectedContacts[i].fullName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       softWrap: false,
@@ -136,7 +141,7 @@ class _CreateChatPageState extends State<CreateChatPage> {
               ]),
               Container(
                 alignment: Alignment.bottomLeft,
-                child: Text("last seen recently",
+                child: Text(widget._selectedContacts[i].email,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,

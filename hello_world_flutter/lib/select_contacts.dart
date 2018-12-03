@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hello_world_flutter/create_chat.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -9,27 +12,42 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   bool _isButtonDisabled = true;
+  List<Contact> _selectedContacts;
 
   @override
   Widget build(BuildContext context) {
-    var p = new ContactList(kContacts);
-
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Contacts"),
-          actions: <Widget>[_buildCreateChatButton()],
+    var createChatButton = _buildCreateChatButton();
+    var contactList = ContactList();
+    contactList.changeNotifier.stream.listen((selectedItems) {
+      _selectedContacts = selectedItems;
+      _isButtonDisabled = _selectedContacts.length == 0;
+      setState(() {});
+    });
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Contacts"),
+          actions: <Widget>[createChatButton],
         ),
-        body: new ContactList(kContacts));
+        body: contactList);
   }
 
-  Widget _buildCreateChatButton() {
-    return new IconButton(
-      icon: const Icon(
-        Icons.add,
-        size: 25,
+  FlatButton _buildCreateChatButton() {
+    return FlatButton(
+      child: Text(
+        "create chat",
+        style: TextStyle(color: _isButtonDisabled ? Colors.grey : Colors.blue),
       ),
-      color: Colors.cyan,
-      onPressed: _isButtonDisabled ? null : () {},
+      onPressed: _isButtonDisabled
+          ? null
+          : () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) {
+                    return CreateChatPage(_selectedContacts);
+                  },
+                ),
+              );
+            },
     );
   }
 }
@@ -47,16 +65,14 @@ const aContacts = const <Contact>[
 ];
 
 class ContactList extends StatefulWidget {
-  final List<Contact> _contacts;
-
-  ContactList(this._contacts);
+  final StreamController<List<Contact>> changeNotifier = StreamController();
 
   @override
   ContactListState createState() => ContactListState();
 }
 
 class ContactListState extends State<ContactList> {
-  List<Contact> selectedContacts = List<Contact>();
+  List<Contact> _selectedContacts = List<Contact>();
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +82,14 @@ class ContactListState extends State<ContactList> {
   Widget _buildContacts() {
     return ListView.builder(
       itemBuilder: (context, index) => _buildRow(groups.keys.elementAt(index)),
-      itemCount: widget._contacts.length,
+      itemCount: groups.length,
     );
   }
 
   Widget _buildRow(String key) {
     var groupMemebers = <Widget>[];
     groups[key].forEach((member) {
-      var alreadyAdded = selectedContacts.contains(member);
+      var alreadyAdded = _selectedContacts.contains(member);
       var container = Container(
           child: Row(
         children: <Widget>[
@@ -81,10 +97,11 @@ class ContactListState extends State<ContactList> {
             child: _ContactListItem(member, alreadyAdded, () {
               setState(() {
                 if (alreadyAdded) {
-                  selectedContacts.remove(member);
+                  _selectedContacts.remove(member);
                 } else {
-                  selectedContacts.add(member);
+                  _selectedContacts.add(member);
                 }
+                widget.changeNotifier.sink.add(_selectedContacts);
               });
             }),
           )
