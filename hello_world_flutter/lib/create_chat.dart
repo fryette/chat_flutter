@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hello_world_flutter/select_contacts.dart';
+import 'package:hello_world_flutter/models/contact.dart';
 
 class CreateChatPage extends StatefulWidget {
-  List<Contact> _selectedContacts;
+  final List<Contact> _selectedContacts;
 
   CreateChatPage(this._selectedContacts);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:hello_world_flutter/SignalRClient.dart';
+import 'package:hello_world_flutter/blocs/block_provider.dart';
+import 'package:hello_world_flutter/blocs/selected_bloc.dart';
 import 'package:hello_world_flutter/select_contacts.dart';
 import 'package:hello_world_flutter/widgets/circleImage.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future _test() async {
-    await _client.connect('http://10.55.1.191:51001/IntegrationTestHub', '');
+    //await _client.connect('http://10.55.1.191:51001/IntegrationTestHub', '');
   }
 }
 
@@ -31,8 +32,6 @@ class RandomWords extends StatefulWidget {
 }
 
 class RandomWordsState extends State<RandomWords> {
-  final List<WordPair> _suggestions = <WordPair>[];
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -69,9 +68,9 @@ class RandomWordsState extends State<RandomWords> {
 
   void getNextPage() {
     Navigator.of(context).push(
-      new MaterialPageRoute<void>(
+      new MaterialPageRoute(
         builder: (BuildContext context) {
-          return new ContactsPage();
+          return BlocProvider<ContactsBloc>(bloc: ContactsBloc(), child: ContactsPage());
         },
       ),
     );
@@ -80,15 +79,12 @@ class RandomWordsState extends State<RandomWords> {
   Widget _buildSuggestions() {
     return new ListView.builder(
         padding: const EdgeInsets.all(16.0),
+        itemCount: 10,
         itemBuilder: (BuildContext _context, int i) {
           if (i.isOdd) {
             return new Divider(
               indent: 100,
             );
-          }
-          final int index = i ~/ 2;
-          if (index >= _suggestions.length - 100) {
-            _suggestions.addAll(generateWordPairs().take(100));
           }
           return _buildChatListRow();
         });
@@ -104,13 +100,11 @@ class RandomWordsState extends State<RandomWords> {
         title: Column(children: <Widget>[
           Row(children: <Widget>[
             Expanded(
-              child: Text(
-                  "My Nigazih wejfiuoew hoi ufgheo uwihfiu dwh ouihwo iufho qwieå channel",
+              child: Text("My Nigazih wejfiuoew hoi ufgheo uwihfiu dwh ouihwo iufho qwieå channel",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold)),
+                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
             ),
             Container(
                 margin: const EdgeInsets.only(left: 5),
@@ -119,10 +113,7 @@ class RandomWordsState extends State<RandomWords> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 14)))
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 14)))
           ]),
           Container(
             alignment: Alignment.bottomLeft,
@@ -130,8 +121,7 @@ class RandomWordsState extends State<RandomWords> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.normal)),
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
           )
         ]));
   }
