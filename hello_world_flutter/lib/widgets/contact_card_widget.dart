@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hello_world_flutter/blocs/block_provider.dart';
-import 'package:hello_world_flutter/blocs/selected_bloc.dart';
-import 'package:hello_world_flutter/blocs/selected_contacts_bloc.dart';
+import 'package:hello_world_flutter/blocs/contacts_bloc.dart';
+import 'package:hello_world_flutter/blocs/contact_bloc.dart';
 import 'package:hello_world_flutter/models/contact.dart';
 
 class ContactCardWidget extends StatefulWidget {
   ContactCardWidget({Key key, @required this.contactCard, @required this.selectedContactsStream})
       : super(key: key);
 
-  Contact contactCard;
-  Stream<List<Contact>> selectedContactsStream;
+  final Contact contactCard;
+  final Stream<List<Contact>> selectedContactsStream;
 
   @override
   State<StatefulWidget> createState() => ContactCardWidgetState();
@@ -19,7 +19,7 @@ class ContactCardWidget extends StatefulWidget {
 
 class ContactCardWidgetState extends State<ContactCardWidget> {
   StreamSubscription _subscription;
-  SelectedContactsBloc _bloc;
+  ContactBloc _selectedContactsBloc;
 
   bool _isSelected = false;
 
@@ -43,14 +43,14 @@ class ContactCardWidgetState extends State<ContactCardWidget> {
   }
 
   void _createBloc() {
-    _bloc = SelectedContactsBloc(widget.contactCard);
+    _selectedContactsBloc = ContactBloc(widget.contactCard);
 
-    _subscription = widget.selectedContactsStream.listen(_bloc.inSelected.add);
+    _subscription = widget.selectedContactsStream.listen(_selectedContactsBloc.inSelected.add);
   }
 
   void _disposeBloc() {
     _subscription.cancel();
-    _bloc.dispose();
+    _selectedContactsBloc.dispose();
   }
 
   @override
@@ -70,7 +70,7 @@ class ContactCardWidgetState extends State<ContactCardWidget> {
           alignment: Alignment.centerLeft,
           children: <Widget>[
             StreamBuilder<bool>(
-              stream: _bloc.outIsSelected,
+              stream: _selectedContactsBloc.outIsSelected,
               initialData: false,
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 _isSelected = snapshot.data;

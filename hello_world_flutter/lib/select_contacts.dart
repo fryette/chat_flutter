@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_world_flutter/blocs/block_provider.dart';
-import 'package:hello_world_flutter/blocs/selected_bloc.dart';
+import 'package:hello_world_flutter/blocs/contacts_bloc.dart';
 import 'package:hello_world_flutter/create_chat.dart';
 import 'package:hello_world_flutter/models/contact.dart';
 import 'package:hello_world_flutter/widgets/contact_card_widget.dart';
@@ -24,7 +24,7 @@ class ContactsPage extends StatelessWidget {
 
   Widget _buildCreateChatButton(ContactsBloc contacts) {
     return StreamBuilder<int>(
-        stream: contacts.outTotalFavorites,
+        stream: contacts.outTotalSelected,
         builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
           return FlatButton(
               child: Text(

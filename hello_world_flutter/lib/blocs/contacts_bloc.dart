@@ -15,21 +15,21 @@ class ContactsBloc implements BlocBase {
   ///
   /// Interface that allows to add a new contact to chat
   ///
-  BehaviorSubject<Contact> _selectedContactsAddController = new BehaviorSubject<Contact>();
-  Sink<Contact> get inAddContact => _selectedContactsAddController.sink;
+  BehaviorSubject<Contact> _addController = new BehaviorSubject<Contact>();
+  Sink<Contact> get inAddContact => _addController.sink;
 
   ///
   /// Interface that allows to remove a movie from the list of favorites
   ///
-  BehaviorSubject<Contact> _selectedContactsRemoveController = new BehaviorSubject<Contact>();
-  Sink<Contact> get inRemoveContact => _selectedContactsRemoveController.sink;
+  BehaviorSubject<Contact> _removeController = new BehaviorSubject<Contact>();
+  Sink<Contact> get inRemoveContact => _removeController.sink;
 
   ///
   /// Interface that allows to get the total number of favorites
   ///
-  BehaviorSubject<int> _selectedContactsTotalController = new BehaviorSubject<int>(seedValue: 0);
-  Sink<int> get _inTotalFavorites => _selectedContactsTotalController.sink;
-  Stream<int> get outTotalFavorites => _selectedContactsTotalController.stream;
+  BehaviorSubject<int> _totalController = new BehaviorSubject<int>(seedValue: 0);
+  Sink<int> get _inTotalSelected => _totalController.sink;
+  Stream<int> get outTotalSelected => _totalController.stream;
 
   ///
   /// Interface that allows to get the list of all favorite movies
@@ -38,18 +38,15 @@ class ContactsBloc implements BlocBase {
   Sink<List<Contact>> get _inContacts => _selectedController.sink;
   Stream<List<Contact>> get outContacts => _selectedController.stream;
 
-  ///
-  /// Constructor
-  ///
   ContactsBloc() {
-    _selectedContactsAddController.listen(_handleAddContact);
-    _selectedContactsRemoveController.listen(_handleRemoveContact);
+    _addController.listen(_handleAddContact);
+    _removeController.listen(_handleRemoveContact);
   }
 
   void dispose() {
-    _selectedContactsAddController.close();
-    _selectedContactsRemoveController.close();
-    _selectedContactsTotalController.close();
+    _addController.close();
+    _removeController.close();
+    _totalController.close();
     _selectedController.close();
   }
 
@@ -57,20 +54,18 @@ class ContactsBloc implements BlocBase {
 
   void _handleAddContact(Contact contactCard) {
     _selectedContacts.add(contactCard);
-
     _notify();
   }
 
   void _handleRemoveContact(Contact contactCard) {
     _selectedContacts.remove(contactCard);
-
     _notify();
   }
 
   void _notify() {
     // Send to whomever is interested...
     // The total number of favorites
-    _inTotalFavorites.add(_selectedContacts.length);
+    _inTotalSelected.add(_selectedContacts.length);
 
     // The new list of all favorite movies
     _inContacts.add(UnmodifiableListView(_selectedContacts));

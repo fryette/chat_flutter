@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_world_flutter/SignalRClient.dart';
 import 'package:hello_world_flutter/blocs/block_provider.dart';
-import 'package:hello_world_flutter/blocs/selected_bloc.dart';
+import 'package:hello_world_flutter/blocs/contacts_bloc.dart';
 import 'package:hello_world_flutter/select_contacts.dart';
 import 'package:hello_world_flutter/widgets/circleImage.dart';
 
